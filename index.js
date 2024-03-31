@@ -5,6 +5,7 @@ const path = require('path');
 
 const client = new Client({ intents: [IntentsBitField.Flags.Guilds, IntentsBitField.Flags.GuildMessages, IntentsBitField.Flags.MessageContent] });
 const { clientId, guildId, token } = require('./config.json');
+const { channel } = require('diagnostics_channel');
 client.commands = new Collection();
 
 const commands = [];
@@ -23,7 +24,7 @@ for (const folder of commandFolders) {
 		if ('data' in command && 'execute' in command) {
 			commands.push(command.data.toJSON());
       client.commands.set(command.data.name, command);
-      console.log(command.data.toJSON());
+      //console.log(command.data.toJSON());
 		} else {
 			console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
 		}
@@ -66,62 +67,3 @@ for (const file of eventFiles) {
 }
 
 client.login(token);
-
-/*
-const { Client, IntentsBitField, joinVoiceChannel, createAudioPlayer, createAudioResource } = require('discord.js');
-// const { createDiscordJSAdapter } = require('@discordjs/voice');
-
-const client = new Client({
-  intents: [
-    IntentsBitField.Flags.Guilds,
-    IntentsBitField.Flags.GuildMessages,
-    IntentsBitField.Flags.MessageContent,
-    IntentsBitField.Flags.GuildVoiceStates,
-  ],
-});
-
-const token = 'MTIwNTAzNzA0MDAyNzMwMzk3Ng.Gb8kcZ.y3484Ya3prEisGsZmLheMVR1ZZg_yyasOVKKRY'; 
-const audioFilePath = 'C:\\Users\\levia\\Desktop\\Atmos-Music\\Cinematic Atmos\\Cinematic Atmos.mp3';
-
-client.options.permissions = 8;
-
-client.login(token);
-
-client.once('ready', (c) => {
-  console.log(`Logged in as ${client.user.tag} lets fucking go!`);
-  client.user.setActivity('with your moms feelings');
-});
-
-client.on('messageCreate', (message) => {
-  console.log(message);
-})
-
-client.on('messageCreate', message => {
-  if (message.content.startsWith("!ping")) {
-    message.channel.send('Pong!');
-  }
-});
-
-client.on('messageCreate', async (message) => {
-  if (message.content.toLowerCase() === '!join') {
-    const channel = message.member.voice.channel;
-
-    if (channel) {
-      const connection = joinVoiceChannel({
-        channelId: channel.id,
-        guildId: channel.guild.id,
-        adapterCreator: createDiscordJSAdapter(channel),
-      });
-
-      const player = createAudioPlayer();
-      const resource = createAudioResource(audioFilePath);
-
-      player.play(resource);
-      connection.subscribe(player);
-
-      message.reply('Joined the voice channel and started playing audio!');
-    } else {
-      message.reply('You need to be in a voice channel to use this command!');
-    }
-  }
-});*/
