@@ -1,17 +1,33 @@
 const { Events } = require('discord.js');
-const { openAIKey } = require('../config.json');
+const { openAIKey, aesKey } = require('../config.json');
 const fs = require('fs');
 const axios = require('axios');
 const { reverse } = require('dns');
+const crypto = require('crypto');
 const openAIClient = axios.create({
     headers: { Authorization: "Bearer " + openAIKey },
 });
+
+const algorithm = 'aes-256-ctr';
+let key = aesKey; 
+key =crypto.createHash('sha256').update(key).digest('base64').substr(0, 32);
+
 var genCode;
 const OWED_FILE_PATH = "owed.json"
 var moneyOwed = {};
 if (fs.existsSync(OWED_FILE_PATH)) {
-    moneyOwed = JSON.parse(fs.readFileSync(OWED_FILE_PATH));
+    // read owed file
+    // moneyOwed = JSON.parse(fs.readFileSync(OWED_FILE_PATH));
+    var buf = fs.readFileSync(OWED_FILE_PATH);//Buffer.from(fs.readFileSync(OWED_FILE_PATH), 'utf8');
+    const iv = buf.slice(0, 16);
+    buf = buf.slice(16);
+
+    const decipher = crypto.createDecipheriv(algorithm, key, iv);
+    const result = Buffer.concat([decipher.update(buf), decipher.final()]);
+    moneyOwed = JSON.parse(result.toString());
+
     console.log("found owed file.");
+    console.log(moneyOwed);
 }
 const prefix = '!';
 var msgCommands = {}; // holds the cmds
@@ -121,8 +137,15 @@ function getOwesKey(ower, owee) {
 function writeOwesDict() {
     /**
      * To be called every time owing object is changed.
+     * Now featuring AES encryption!
      */
-    fs.writeFileSync(OWED_FILE_PATH, JSON.stringify(moneyOwed));
+    const initVector = crypto.randomBytes(16);
+    var buf = Buffer.from(JSON.stringify(moneyOwed), 'utf8');
+    const cipher = crypto.createCipheriv(algorithm, key, initVector);
+
+    const result = Buffer.concat([initVector, cipher.update(buf), cipher.final()]);
+    fs.writeFileSync(OWED_FILE_PATH, result);
+    //fs.writeFileSync(OWED_FILE_PATH, JSON.stringify(moneyOwed));
 }
 function checkOwe(params, message) {
     /**
