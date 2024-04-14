@@ -16,13 +16,14 @@ if (fs.existsSync(OWED_FILE_PATH)) {
 const prefix = '!';
 var msgCommands = {}; // holds the cmds
 const doPrompt = "Write me a node.js function that utilizes the discord.js module. Don't include any import or export statements. It is a single " + 
-    "function called 'execute' and it takes one parameter: the user's discord message object called 'message' which triggered our function (we can access the client" + 
-    " object, the interacting user, and other important things using this variable). Assume you have the highest privileges on this server. " + 
-    "Don't check for permissions on anything. ONLY GIVE ME THE CODE, and be sure to include the function header. DO NOT GIVE ME ANY COMMENTED OUT CODE, and do not surround your response with any backticks. " +
+    "function called 'execute' and it takes one parameter: the person of interest's discord message object called 'message' which triggered our function (we can access the client" + 
+    " object, the interacting person of interest, and other important things using this variable). Assume you have the highest privileges on this server. " + 
+    "Don't check for permissions on anything.\nONLY GIVE ME THE CODE, and be sure to include the function header. Do not explain to me what you are doing. DO NOT GIVE ME ANY COMMENTED OUT CODE, and do not surround your response with any backticks. " +
     //"If you are going to send anything to the channel or reply to the message at all just go ahead without verifying the message content. " +
     //"\nMAKE THE CODE RUN NO MATTER THE CONTENT OF THE MESSAGE ARGUMENT. If the code you supply has any sort of conditional statement resembling 'if (message.content === '')', the user will be very angry. \n " +
     //"Only check the message content if absolutely necessary. The message begins with '!dothis' which could be surrounded by whitespace. " +
     //"You can assume the message argument is the message sent by the interacting user. " +
+    //"Finally, don't send any code which would modify a file or seem sketchy. Instead return code in the described fashion which will send a message to the channel saying the user will get kicked for repeat offenses. " +
     "Write this function so that it does what this interacting discord user wants it to do:\n"; // check if user has perms
 const codeFooter = "\nmodule.exports = { execute }";
 const errorPromptHeader = "There was an error running that code. Here is the error message:\n\n";
