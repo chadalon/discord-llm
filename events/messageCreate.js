@@ -259,7 +259,7 @@ function execute(message) {
     }
 }
 msgCommands.ask = ask;
-msgCommands.dothis = dothis;
+//msgCommands.dothis = dothis;
 msgCommands.owe = owe;
 module.exports = {
 	name: Events.MessageCreate,
